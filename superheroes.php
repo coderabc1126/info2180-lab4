@@ -60,13 +60,31 @@ $superheroes = [
       "name" => "Wanda Maximoff",
       "alias" => "Scarlett Witch",
       "biography" => "Notably powerful, Wanda Maximoff has fought both against and with the Avengers, attempting to hone her abilities and do what she believes is right to help the world.",
-  ], 
+  ],
 ];
 
 ?>
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+<?php $data=trim(filter_var($_GET['query'],FILTER_SANITIZE_STRING)); ?>
+
+<?php
+    function fetchHero($superheroes, $data){
+        $found = false;
+        foreach ($superheroes as $superhero){
+            if(strtolower($superhero["alias"]===$data) || strtolower($superhero["name"]===$data)){
+                echo "<h3>", $superhero["alias"],"</h3>";
+                echo "<h4>","A.K.A"," ", $superhero["name"],"</h4>";
+                echo "<p>", $superhero["biography"],"</p>";
+                $found = true;
+            } elseif($data===""){
+                $slist = "<ul>" ."<li>" . $superhero["alias"] . "</li>" ."</ul>" ;
+                echo $slist ;
+            }
+        }
+        if($found === false && $data !== ""){
+            echo "<h3 style='color:red;'>" , "SUPERHEROES NOT FOUND" ,"</h3>";
+        }
+    }
+
+    fetchHero($superheroes,$data);
+?>
